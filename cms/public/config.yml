@@ -1,0 +1,141 @@
+backend:
+  name: github
+  repo: trustjoyhere-oss/fuwari
+  branch: main
+  auth_methods: [token]
+  prompt_commit_messages: true
+  commit_messages:
+    create: "content: 创建 {{collection}}《{{slug}}》"
+    update: "content: 更新 {{collection}}《{{slug}}》"
+    delete: "content: 删除 {{collection}}《{{slug}}》"
+    uploadMedia: "media: 上传 {{path}}"
+    deleteMedia: "media: 删除 {{path}}"
+
+app_title: 小辉辉博客管理后台
+publish_mode: simple
+
+media_folder: public/uploads
+public_folder: /uploads
+media_library:
+  name: default
+  config:
+    max_file_size: 20971520
+    slugify_filename: true
+
+slug:
+  encoding: unicode
+  clean_accents: true
+  sanitize_replacement: "-"
+  lowercase: true
+
+output:
+  omit_empty_optional_fields: true
+
+editor:
+  preview: true
+  second_pane: true
+
+collections:
+  - name: posts
+    label: 文章
+    label_singular: 文章
+    icon: article
+    folder: src/content/posts
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    duplicate: true
+    identifier_field: title
+    slug:
+      template: "{{title}}"
+      editable: [create]
+      hint: 文件名创建后固定，避免已有文章链接变化。
+    nested:
+      depth: 10
+      subfolders: false
+    summary: "{{title}} · {{published | date('YYYY-MM-DD')}}{{draft | ternary(' · 草稿', '')}}"
+    sortable_fields: [published, updated, title]
+    view_filters:
+      - label: 草稿
+        field: draft
+        pattern: true
+      - label: 已发布
+        field: draft
+        pattern: false
+    view_groups:
+      - label: 分类
+        field: category
+    editor:
+      preview: true
+      second_pane: true
+    fields:
+      - name: title
+        label: 标题
+        widget: string
+      - name: published
+        label: 发布日期
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+      - name: updated
+        label: 更新日期
+        widget: datetime
+        type: date
+        format: YYYY-MM-DD
+        required: false
+      - name: draft
+        label: 草稿
+        widget: boolean
+        default: true
+        hint: 新文章默认是草稿。确认完成后关闭此开关才会显示在正式博客中。
+      - name: description
+        label: 摘要
+        widget: text
+        required: false
+      - name: image
+        label: 封面
+        widget: image
+        required: false
+        choose_url: true
+      - name: category
+        label: 分类
+        widget: string
+        required: false
+      - name: tags
+        label: 标签
+        label_singular: 标签
+        widget: list
+        required: false
+        allow_add: true
+        field:
+          name: tag
+          label: 标签
+          widget: string
+      - name: lang
+        label: 文章语言
+        widget: string
+        required: false
+        hint: 可留空，或填写 zh_CN、en、ja 等语言代码。
+      - name: body
+        label: 正文
+        widget: markdown
+        modes: [raw, rich_text]
+        sanitize_preview: true
+        editor_components:
+          - code-block
+          - image
+          - table
+          - hr
+          - local-video
+          - attachment
+          - youtube
+          - bilibili
+
+asset_collections:
+  - name: uploads
+    label: 媒体与附件
+    icon: perm_media
+    media_folder: public/uploads
+    public_folder: /uploads

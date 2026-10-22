@@ -3,11 +3,12 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "check": "astro check",
-    "build": "astro build && pagefind --site dist",
-    "preview": "astro preview",
+    "dev": "vite build --config vite.cms.config.mjs && cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "start": "vite build --config vite.cms.config.mjs && cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "build": "vite build --config vite.cms.config.mjs && cross-env ASTRO_TELEMETRY_DISABLED=1 astro build && pagefind --site dist",
+    "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "cms:build": "vite build --config vite.cms.config.mjs",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
@@ -31,6 +32,7 @@
     "@iconify-json/fa6-solid": "^1.2.4",
     "@iconify-json/material-symbols": "^1.2.50",
     "@iconify/svelte": "^4.2.0",
+    "@sveltia/cms": "0.250.0",
     "@swup/astro": "^1.7.0",
     "@tailwindcss/typography": "^0.5.19",
     "astro": "5.13.10",
@@ -69,8 +71,10 @@
     "@types/markdown-it": "^14.1.2",
     "@types/mdast": "^4.0.4",
     "@types/sanitize-html": "^2.16.0",
+    "cross-env": "7.0.3",
     "postcss-import": "^16.1.1",
-    "postcss-nesting": "^13.0.2"
+    "postcss-nesting": "^13.0.2",
+    "vite": "6.4.1"
   },
   "packageManager": "pnpm@9.14.4"
 }

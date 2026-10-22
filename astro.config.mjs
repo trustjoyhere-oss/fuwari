@@ -24,6 +24,24 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 
+function serveAdminIndex() {
+	return {
+		name: "serve-admin-index",
+		apply: "serve",
+		configureServer(server) {
+			server.middlewares.use((request, _response, next) => {
+				const [pathname, query] = (request.url ?? "").split("?", 2);
+
+				if (pathname === "/admin" || pathname === "/admin/") {
+					request.url = `/admin/index.html${query ? `?${query}` : ""}`;
+				}
+
+				next();
+			});
+		},
+	};
+}
+
 // https://astro.build/config
 export default defineConfig({
 	site: "https://fuwari.vercel.app/",
@@ -154,6 +172,7 @@ export default defineConfig({
 		],
 	},
 	vite: {
+		plugins: [serveAdminIndex()],
 		build: {
 			rollupOptions: {
 				onwarn(warning, warn) {
