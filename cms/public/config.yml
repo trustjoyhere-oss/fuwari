@@ -1,3 +1,7 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# 站点专属配置：迁移到其他博客时，优先修改这一段。
+# 配置文件会公开提供给浏览器，禁止在这里填写 Token、密码或 Client Secret。
+# ─────────────────────────────────────────────────────────────────────────────
 backend:
   name: github
   repo: trustjoyhere-oss/fuwari
@@ -12,6 +16,16 @@ backend:
     deleteMedia: "media: 删除 {{path}}"
 
 app_title: 小辉辉博客管理后台
+site_url: https://fuwari-dhf.pages.dev
+display_url: https://fuwari-dhf.pages.dev
+logo:
+  src: /favicon/favicon-light-192.png
+  show_in_header: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 通用博客配置：同类 Astro Markdown 博客通常可以原样复用。
+# simple + draft:true 让新文章先以草稿保存，避免误发布。
+# ─────────────────────────────────────────────────────────────────────────────
 publish_mode: simple
 
 media_folder: public/uploads
@@ -39,6 +53,7 @@ collections:
   - name: posts
     label: 文章
     label_singular: 文章
+    description: 在这里管理 Markdown 文章。新文章默认保存为草稿，确认完成后再关闭“草稿”开关。
     icon: article
     folder: src/content/posts
     extension: md
@@ -47,6 +62,9 @@ collections:
     delete: true
     duplicate: true
     identifier_field: title
+    preview_path: "/posts/{{slug}}/"
+    aliases_field: false
+    thumbnail: image
     slug:
       template: "{{title}}"
       editable: [create]
@@ -56,6 +74,12 @@ collections:
       subfolders: false
     summary: "{{title}} · {{published | date('YYYY-MM-DD')}}{{draft | ternary(' · 草稿', '')}}"
     sortable_fields: [published, updated, title]
+    table_columns:
+      - _summary
+      - published
+      - category
+      - draft
+      - { field: commit_date, label: 最近提交 }
     view_filters:
       - label: 草稿
         field: draft
@@ -73,6 +97,7 @@ collections:
       - name: title
         label: 标题
         widget: string
+        hint: 建议清晰、具体，并避免在标题中堆叠关键词。
       - name: published
         label: 发布日期
         widget: datetime
@@ -94,15 +119,18 @@ collections:
         label: 摘要
         widget: text
         required: false
+        hint: 用一到两句话概括文章，建议控制在 80–160 个中文字符。
       - name: image
         label: 封面
         widget: image
         required: false
         choose_url: true
+        hint: 可以上传到媒体库、选择已有图片，或填写外部图片地址。
       - name: category
         label: 分类
         widget: string
         required: false
+        hint: 建议每篇文章只使用一个主要分类。
       - name: tags
         label: 标签
         label_singular: 标签
@@ -113,6 +141,7 @@ collections:
           name: tag
           label: 标签
           widget: string
+        hint: 使用少量、稳定的标签，方便长期检索。
       - name: lang
         label: 文章语言
         widget: string
@@ -121,6 +150,7 @@ collections:
       - name: body
         label: 正文
         widget: markdown
+        hint: 支持 Markdown、代码块、表格、图片、提示块、视频、附件和 GitHub 仓库卡片。
         modes: [raw, rich_text]
         sanitize_preview: true
         editor_components:
@@ -132,6 +162,8 @@ collections:
           - attachment
           - youtube
           - bilibili
+          - admonition
+          - github-card
 
 asset_collections:
   - name: uploads
